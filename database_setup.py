@@ -1,5 +1,4 @@
-import sys
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import  create_engine
@@ -9,37 +8,40 @@ Base = declarative_base()
 class Item(Base):
     __tablename__ = 'item'
     title = Column(String(100), nullable = False, index = True)
-    price = Column(Integer, nullable = False)
+    price = Column(Integer, nullable = True)
+    discount_price=Column(Integer, nullable = True)
     id = Column(Integer, primary_key = True)
-    brand_id = Column(Integer, ForeignKey('brand.id'), nullable = False)
+    brand= Column(String(20), nullable = True, index = True)
     pic = Column(String(200),nullable = True)
-    brand = relationship('Brand', backref = 'item')
-    discount = relationship('Discount', backref='item')
+    shop_id = Column(Integer, ForeignKey("shop.id"),nullable=True)
+    shop=relationship("Shop")
 
-class Brand(Base):
-    __tablename__ = 'brand'
-    id = Column(Integer,primary_key = True)
-    name = Column(String(50), nullable = False, index = True)
-    logo = Column(String(200), nullable = True)
-    shop = relationship('Shop', backref='brand')
+    @property
+    def serialize_item(self):
+        return {
+            'title': self.title,
+            'price': self.price,
+            'discount_price': self.discount_price,
+            'brand' : self.brand,
+            'shop': self.shop.id
+        }
 
 class Shop(Base):
     __tablename__ = 'shop'
     id = Column(Integer,primary_key=True)
     name = Column(String(20), nullable = False, index = True)
-    url = Column(String(100), nullable = False)
-    logo = Column(String(200), nullable = True)
+    Item = relationship("Item")
 
-class Discount(Base):
-    __tablename__ = 'discount'
-    item_id = Column(Integer,ForeignKey('item.id'),nullable = False)
-    shop_id = Column(Integer,ForeignKey('shop.id'),nullable = False)
-    discount_price = Column(Integer,nullable = False)
-    start_time = Column(DateTime,nullable = False)
-    end_time = Column(DateTime,nullable = True)
-    id = Column(Integer,primary_key = True)
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'url': self.url,
+            'Item': [i.serialize_item for i in self.Item]
+        }
 
 
-engine = create_engine('sqlite:///discount.db')
+engine = create_engine('sqlite:///item.db')
 
 Base.metadata.create_all(engine)

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{shop_name}}</title>
+</head>
+<body>
+
+<div>
+    <a href="item/add">New Item</a>
+</div>
+
+<!--MESSAGE FLASHING EXAMPLE -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+
+<ul>
+{% for message in messages %}
+  <li><strong>{{message}}</strong></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
+
+    <div>
+        <h1>{{shop_name}} {{N}} Items </h1>
+
+        {% for i in items %}
+        <ul>
+            <li>
+                <a href="/shop/{{i.shop.name}}/{{i.id}}">{{i.title}}</a>
+                <a href="/shop/{{i.shop.name}}/{{i.id}}/edit">Edit</a>
+                <a href="/shop/{{i.shop.name}}/{{i.id}}/delete">Delete</a>
+            </li>
+        </ul>
+
+
+        {% endfor %}
+
+    </div>
+
+     <div>
+        <h1>Shops</h1>
+        {% for i in shops %}
+        <ul>
+            <li>
+             <a href="/shop/{{i.name}}">{{i.name}}</a>
+            </li>
+        </ul>
+        {% endfor %}
+</body>
+</html>
