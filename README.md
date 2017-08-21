@@ -25,17 +25,17 @@ You can install **oauth2client** with the code ```pip3 install oauth2client```
 ### Data - item.db
 The data used in this project is already in the respository ,named **item.db**. You can also add the origianl data by running code ```python3 lotsofitem.py```
 
-### Localhost - port =5000
-The project will run on **localhost:5000** . If the 5000 port have been used, you can change the port in ```project.py``` in the end of the code.
+### Localhost - port =8000
+The project will run on **localhost:8000** . If the 8000 port have been used, you can change the port in ```project.py``` in the end of the code.
 
 ## How to use
 ### Run The Program
 1. **Make sure you have ```item.db``` and ```database_setup.py``` in the same file with projcet.py**
 2. **Make sure you have download templates file and static file, which insure the web can be displayed correctly**
-3. Then use the comand ```python3 projcet.py```, it will start the localhost of 5000. and you can visit the website by visiting **http://localhost:5000/**. if the 5000 port have been used, you can change the port in "project.py" in the end of the code.
+3. Then use the comand ```python3 projcet.py```, it will start the localhost of 8000. and you can visit the website by visiting **http://localhost:8000/**. if the 8000 port have been used, you can change the port in "project.py" in the end of the code.
 
 ### API
-You can get the data by visiting **http://localhost:5000/catalog/JSON**
+You can get the data by visiting **http://localhost:8000/catalog/JSON**
 
 ### Add/Delete/Edit data
 You can add/delete/edit the data once you have login by google's OAuth conncetion.
