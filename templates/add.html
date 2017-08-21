@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <title>New Item</title>
 
-
-</head>>
 
 </head>
 <body>
@@ -15,12 +15,12 @@
 
     <header>
         <div class="header-wrap">
-            <p class="title">Catalog App</p>
+            <a class="title" href="/">Catalog App</a>
             <div class="login">
                 {% if log_status=="login" %}
-                <a class="headerlink" href="/login">Logout</a></div>
+                <a class="headerlink" href="/gconnect">Logout</a></div>
                 {% else %}
-                <a class="headerlink" href="/gconnect">Login</a></div>
+                <a class="headerlink" href="/login">Login</a></div>
                 {% endif %}
         </div>
     </header>
@@ -28,11 +28,15 @@
 
     <div class="content">
         <h1> New Item </h1>
-        <form action="/item/add" method = 'POST' enctype='multipart/form-data'>
+        <form action="/item/add" method = 'POST' enctype='multipart/form-data' onsubmit="checkNull(this)">
             <h2>Title:</h2>
             <input id="title" type="text" name='title'/>
+            <h2>Brand:</h2>
+            <input id="brand" type="text" name='brand'/>
             <h2>Price:</h2>
             $<input id="price" type="text" name='price'/>
+            <h2>Discount price:</h2>
+            $<input id="discount_price" type="text" name='discount_price'/>
             <h2>Shop：</h2>
                 <select name="shop">
                     {% for i in shops %}
@@ -40,7 +44,8 @@
                     {% endfor %}
                 </select>
             <br>
-            <input class="button" type='submit' value='Create'/>
+
+            <input id="create_bnt" class="button" type='submit' value='Create' onclick="checkNull(this.form)">
         </form>
     </div>
 </body>

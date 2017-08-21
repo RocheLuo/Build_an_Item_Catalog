@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <title>{{shop_name}}</title>
 </head>
 <body>
 
     <header>
         <div class="header-wrap">
-            <p class="title">Catalog App</p>
+            <a class="title" href="/">Catalog App</a>
             <div class="login">
                 {% if log_status=="login" %}
-                <a class="headerlink" href="/login">Logout</a></div>
+                <a class="headerlink" href="/gconnect">Logout</a></div>
                 {% else %}
-                <a class="headerlink" href="/gconnect">Login</a></div>
+                <a class="headerlink" href="/login">Login</a></div>
                 {% endif %}
         </div>
     </header>
@@ -35,22 +36,8 @@
 </div>
 
 <div class="content">
-    <div class="item_list">
-    <a href="item/add">New Item</a>
 
-        <h1>{{shop_name}} {{N}} Items </h1>
-        <ul>
-                    {% for i in items %}
-            <li>
-                <a href="/shop/{{i.shop.name}}/{{i.id}}">{{i.title}}</a>
-                <a href="/shop/{{i.shop.name}}/{{i.id}}/edit">Edit</a>
-                <a href="/shop/{{i.shop.name}}/{{i.id}}/delete">Delete</a>
-            </li>
-                    {% endfor %}
-        </ul>
-    </div>
-
-     <div class="shop_list">
+         <div class="shop_list">
 
         <h1>Shops</h1>
 
@@ -63,6 +50,23 @@
         </ul>
 
      </div>
+    <div class="item_list">
+
+        <a href="/item/add">New Item</a>
+
+        <h1>{{shop_name}} Items ({{N}} items) </h1>
+        <ul>
+                    {% for i in items %}
+            <li>
+                <a href="/shop/{{i.shop.name}}/{{i.id}}">{{i.title}}</a>
+                <a class="crud" href="/shop/{{i.shop.name}}/{{i.id}}/edit">Edit</a>
+                <a class="crud" href="/shop/{{i.shop.name}}/{{i.id}}/delete">Delete</a>
+            </li>
+                    {% endfor %}
+        </ul>
+    </div>
+<div class="clear"></div>
+
 </div>
 </body>
 </html>

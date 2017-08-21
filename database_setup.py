@@ -37,7 +37,6 @@ class Shop(Base):
         return {
             'id': self.id,
             'name': self.name,
-            'url': self.url,
             'Item': [i.serialize_item for i in self.Item]
         }
 

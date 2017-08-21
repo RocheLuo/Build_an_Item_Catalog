@@ -164,14 +164,15 @@ def catalog_JSON():
 # Making the main catalog
 
 @app.route('/')
+@app.route('/shop')
+@app.route('/shop/')
 def all_list():
     if 'username' in login_session:
         log_staus = "Logout"
     else:
         log_staus = "Login"
-    items = session.query(Item).all()
+    items = session.query(Item).order_by(Item.id.desc()).all()
     shops = session.query(Shop).all()
-    print("yes")
     return render_template('main.html', items=items, shops=shops,log_staus=log_staus)
 
 
@@ -213,7 +214,7 @@ def add_item():
     # if "username" not in login_session:
     #     return redirect("/login")
     if request.method == "POST":
-        newItem = Item(title=request.form['title'],price='$'+request.form['price'],shop=request.form['shop'])
+        newItem = Item(title=request.form['title'],price=request.form['price'],shop_id=request.form['shop'],brand=request.form['brand'])
         session.add(newItem)
         session.commit()
         flash("A new item has been created!")
@@ -232,14 +233,21 @@ def edit_item(item_id,shop_name):
     else:
         log_staus = "Login"
     item = session.query(Item).filter_by(id=item_id).one()
+    shops =session.query(Shop).all()
     if request.method == "POST":
-        item.title=request.form["title"]
+        item.title= request.form["title"]
+        item.price = request.form["price"]
+        item.price = request.form["discount_price"]
+        item.shop_id = request.form["shop"]
+        print ("yes")
+        # item.price = request.form["price"]
+        # item.discount_price = request.form["discount_price"]
         session.add(item)
         session.commit()
         flash("The item has been edited!")
         return redirect(url_for("shop_items",shop_name=shop_name))
     else:
-        return render_template("edit.html",item=item,shop_name=shop_name,log_staus=log_staus)
+        return render_template("edit.html",item=item,shop_name=shop_name,log_staus=log_staus,shops=shops)
 
 # Delete item in the shop
 
@@ -255,9 +263,10 @@ def delete_item(item_id,shop_name):
         session.delete(item)
         session.commit()
         flash("The item has been deleted!")
-        return redirect(url_for("shop_items", shop_name=shop_name))
+        return redirect(url_for("all_list"))
     else:
         return render_template("delete.html",item=item,shop_name=shop_name,log_staus=log_staus)
+
     # return render_template('delete.html')
 
 

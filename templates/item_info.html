@@ -2,19 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <title>{{item.title}}</title>
 </head>
 
 <body>
 
+    <header>
+        <div class="header-wrap">
+            <a class="title" href="/">Catalog App</a>
+            <div class="login">
+                {% if log_status=="login" %}
+                <a class="headerlink" href="/gconnect">Logout</a></div>
+                {% else %}
+                <a class="headerlink" href="/login">Login</a></div>
+                {% endif %}
+        </div>
+    </header>
+
+    <div class="content">
+
 <h1>{{item.title}}</h1>
+        <div>
 <a href="/shop/{{item.shop.name}}/{{item.id}}/edit">Edit</a>
 <a href="/shop/{{item.shop.name}}/{{item.id}}/delete">Delete</a>
-<p>{{item.brand}}</p>
-<p>{{item.price}}</p>
-<p>{{item.discount_price}}</p>
+        </div>
+        <p class="detail">Brand: {{item.brand}}</p>
+        <p class="detail">Price: {{item.price}}</p>
+        <p class="detail">Disccout Price: {{item.discount_price}}</p>
 
-
+    </div>
 
 </body>
 </html>
