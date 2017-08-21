@@ -2,14 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
     <title>{{shop_name}}</title>
 </head>
 <body>
 
-<div>
-    <a href="item/add">New Item</a>
-</div>
+    <header>
+        <div class="header-wrap">
+            <p class="title">Catalog App</p>
+            <div class="login">
+                {% if log_status=="login" %}
+                <a class="headerlink" href="/login">Logout</a></div>
+                {% else %}
+                <a class="headerlink" href="/gconnect">Login</a></div>
+                {% endif %}
+        </div>
+    </header>
 
+
+<div class="flash">
 <!--MESSAGE FLASHING EXAMPLE -->
 {% with messages = get_flashed_messages() %}
 {% if messages %}
@@ -21,33 +32,37 @@
 </ul>
 {% endif %}
 {% endwith %}
+</div>
 
+<div class="content">
+    <div class="item_list">
+    <a href="item/add">New Item</a>
 
-    <div>
         <h1>{{shop_name}} {{N}} Items </h1>
-
-        {% for i in items %}
         <ul>
+                    {% for i in items %}
             <li>
                 <a href="/shop/{{i.shop.name}}/{{i.id}}">{{i.title}}</a>
                 <a href="/shop/{{i.shop.name}}/{{i.id}}/edit">Edit</a>
                 <a href="/shop/{{i.shop.name}}/{{i.id}}/delete">Delete</a>
             </li>
+                    {% endfor %}
         </ul>
-
-
-        {% endfor %}
-
     </div>
 
-     <div>
+     <div class="shop_list">
+
         <h1>Shops</h1>
-        {% for i in shops %}
+
         <ul>
+                    {% for i in shops %}
             <li>
              <a href="/shop/{{i.name}}">{{i.name}}</a>
             </li>
+                    {% endfor %}
         </ul>
-        {% endfor %}
+
+     </div>
+</div>
 </body>
 </html>

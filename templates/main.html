@@ -2,61 +2,74 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
     <title>All Items</title>
 </head>
 <body>
-<!--MESSAGE FLASHING EXAMPLE -->
+
+    <!--Header -->
+
+    <header>
+        <div class="header-wrap">
+            <p class="title">Catalog App</p>
+            <div class="login">
+                {% if log_status=="login" %}
+                <a class="headerlink" href="/login">Logout</a></div>
+                {% else %}
+                <a class="headerlink" href="/gconnect">Login</a></div>
+                {% endif %}
+        </div>
+    </header>
 
 
-<div>
-<a href="/login">Login</a>
-</div>
+    <!--MESSAGE FLASHING EXAMPLE -->
 
+    <div class="flash">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
 
-<div>
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-
-<ul>
-{% for message in messages %}
-  <li><strong>{{message}}</strong></li>
-  {% endfor %}
-</ul>
-{% endif %}
-{% endwith %}
-</div>
-    <div>
-        <a href="item/add">New Item</a>
-    </div>
-    <div>
-        <h1>Latest Items</h1>
-        {% for i in items %}
         <ul>
-            <li>
-                <a href="/shop/{{i.shop.name}}/{{i.id}}">{{i.title}}</a>
-                <a href="#">{{i.brand}}</a>
-                <a href="#">{{i.shop.name}}</a>
-                <a href="#">{{i.shop.id}}</a>
-            </li>
+            {% for message in messages %}
+            <li><strong>{{message}}</strong></li>
+            {% endfor %}
         </ul>
-        {% endfor %}
-
+        {% endif %}
+        {% endwith %}
     </div>
 
-     <div>
-        <h1>Shops</h1>
-        {% for i in shops %}
-        <ul>
-            <li>
-                <a href="/shop/{{i.name}}">{{i.name}}</a>
-                <a href="#">{{i.id}}</a>
-            </li>
-        </ul>
-        {% endfor %}
+    <div class="content">
+        <div class="shop_list">
+            <h1>Shops</h1>
+            <ul>
+            {% for i in shops %}
 
+                <li>
+                    <a href="/shop/{{i.name}}">{{i.name}}</a>
+                </li>
+
+            {% endfor %}
+            </ul>
+        </div>
+
+
+        <div class="item_list">
+            <a href="item/add">New Item</a>
+            <h1>Latest Items</h1>
+            <ul>
+            {% for i in items %}
+                <li>
+                    <a class="" href="/shop/{{i.shop.name}}/{{i.id}}">{{i.title}}</a>
+                    <span class="shop_name">({{i.shop.name}})</span>
+                </li>
+
+            {% endfor %}
+            </ul>
+        </div>
+
+        <div class="clear"></div>
     </div>
-    <div>
-    </div>
+
+
 
 </body>
 </html>

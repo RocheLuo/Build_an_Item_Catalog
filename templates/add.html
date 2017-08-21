@@ -1,30 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
     <title>New Item</title>
+
+
+</head>>
+
 </head>
 <body>
-<h1> New Item </h1>
+
+    <!--Header -->
+
+    <header>
+        <div class="header-wrap">
+            <p class="title">Catalog App</p>
+            <div class="login">
+                {% if log_status=="login" %}
+                <a class="headerlink" href="/login">Logout</a></div>
+                {% else %}
+                <a class="headerlink" href="/gconnect">Login</a></div>
+                {% endif %}
+        </div>
+    </header>
 
 
-<form action="/item/add" method = 'POST' enctype='multipart/form-data'>
-
-    Title:
-    <input type="text" name='title'/>
-    Price: $
-    <input type="text" name='price'/>
-
-    Shop：
-    <select name="shop">
-            {% for i in shops %}
-        <option value="{{i.id}}">{{i.name}}</option>
-            {% endfor %}
-    </select>
-
-
-    <input type='submit' value='Create'/>
-
-    </form>
+    <div class="content">
+        <h1> New Item </h1>
+        <form action="/item/add" method = 'POST' enctype='multipart/form-data'>
+            <h2>Title:</h2>
+            <input id="title" type="text" name='title'/>
+            <h2>Price:</h2>
+            $<input id="price" type="text" name='price'/>
+            <h2>Shop：</h2>
+                <select name="shop">
+                    {% for i in shops %}
+                    <option value="{{i.id}}">{{i.name}}</option>
+                    {% endfor %}
+                </select>
+            <br>
+            <input class="button" type='submit' value='Create'/>
+        </form>
+    </div>
 </body>
 </html>
