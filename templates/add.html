@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <title>New Item</title>
 
 
@@ -17,19 +16,19 @@
         <div class="header-wrap">
             <a class="title" href="/">Catalog App</a>
             <div class="login">
-                {% if log_status=="login" %}
-                <a class="headerlink" href="/gconnect">Logout</a></div>
+                {% if log_status !="login" %}
+                <a class="headerlink" href="/gdisconnect">Logout</a></div>
                 {% else %}
                 <a class="headerlink" href="/login">Login</a></div>
                 {% endif %}
         </div>
     </header>
 
+    <!--Add item -->
 
     <div class="content">
         <h1> New Item </h1>
-        <!--<form action="/item/add" method = 'POST' enctype='multipart/form-data' onsubmit="check()">-->
-        <form method = 'POST' enctype='multipart/form-data' onsubmit="return check()">
+        <form action="/item/add" method = 'POST' enctype='multipart/form-data'>
             <h2>Title:</h2>
             <input id="title" type="text" name='title'/>
             <h2>Brand:</h2>
@@ -45,8 +44,7 @@
                     {% endfor %}
                 </select>
             <br>
-
-            <input id="create_bnt" class="button" type='submit' value='Create'>
+            <input id="create_bnt" class="button" type='submit' value='Create' onclick="return check()">
         </form>
 
         <script>
@@ -57,12 +55,11 @@
                 return false;
                 }
                 else {
+                    return true
 
-        }
-    }
-
-
-</script>
+                 }
+            }
+        </script>
     </div>
 </body>
 </html>

@@ -6,23 +6,30 @@
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <title>Delete Item</title>
 </head>
+
 <body>
+
+    <!--Header -->
+
     <header>
         <div class="header-wrap">
             <a class="title" href="/">Catalog App</a>
             <div class="login">
-                {% if log_status=="login" %}
-                <a class="headerlink" href="/gconnect">Logout</a></div>
+                {% if log_status!="login" %}
+                <a class="headerlink" href="/gdisconnect">Logout</a></div>
                 {% else %}
                 <a class="headerlink" href="/login">Login</a></div>
                 {% endif %}
         </div>
     </header>
+
+    <!--Delete item -->
+
     <div class="content">
-    <h1>Delete {{item.title}}</h1>
-    <form action="{{ url_for('delete_item',item_id=item.id, shop_name=shop_name)}}" method = 'POST' enctype='multipart/form-data'>
-        <input class="button" type='submit' value='Delete'/>
-    </form>
+        <h1>Delete {{item.title}}</h1>
+        <form action="{{ url_for('delete_item',item_id=item.id, shop_name=shop_name)}}" method = 'POST' enctype='multipart/form-data'>
+            <input class="button" type='submit' value='Delete'/>
+        </form>
     </div>
 
 

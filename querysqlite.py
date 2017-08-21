@@ -13,7 +13,8 @@ session = DBSession()
 
 
 
-items = session.query(Item).order_by(Item.id.desc()).all()
+item = session.query(Item).filter_by(id=34).one()
 
-print (items)
+
+print (item.price)
 # print (session.query(Brand).filter_by(id=1).one())

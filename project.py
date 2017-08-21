@@ -1,14 +1,20 @@
-from flask import Flask, render_template, redirect, url_for, jsonify, request, flash,make_response
+from flask import Flask, render_template, redirect, url_for, \
+    jsonify, request, flash, make_response
 from flask import session as login_session
-from oauth2client.client import flow_from_clientsecrets,FlowExchangeError
-import random, string,httplib2,json,requests,retry
-
-app = Flask(__name__)
-
+from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 
 from database_setup import Base, Item, Shop
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+import random
+import string
+import httplib2
+import json
+import requests
+
+
+app = Flask(__name__)
 
 
 # Create session and connect to DB
@@ -18,20 +24,21 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-CLIENT_ID ="1072655513531-4umflv1480tut4u8vr4hfl6g1eo4it7q.apps.googleusercontent.com"
-CLIENT_SECRET="i7ZOvklCFV4cA8TmWRO32vm3"
+CLIENT_ID = "1072655513531-4umflv1480tut4u8vr4hfl6g1eo4it7q." \
+            "apps.googleusercontent.com"
+CLIENT_SECRET = "i7ZOvklCFV4cA8TmWRO32vm3"
+
 
 # Making the login function
-
 @app.route('/login')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in list(range(32)))
     login_session['state'] = state
-    return render_template("login.html",STATE=state)
+    return render_template("login.html", STATE=state)
 
-# Making an API Endpoint ()
 
+# Making the callback function
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
@@ -41,12 +48,9 @@ def gconnect():
         return response
     # Obtain authorization code
     code = request.data
-    print (code)
-
 
     try:
         # Upgrade the authorization code into a credentials object
-        print (type(code))
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
@@ -58,13 +62,10 @@ def gconnect():
 
     # Check that the access token is valid.
     access_token = credentials.access_token
-    print (access_token)
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
            % access_token)
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
-    print (result)
-    print (credentials.id_token)
     # If there was an error in the access token info, abort.
     if result.get('error') is not None:
         response = make_response(json.dumps(result.get('error')), 500)
@@ -90,8 +91,8 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(json.dumps
+                                 ('Current user is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -116,25 +117,28 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;' \
+              '-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print("done!")
     return output
 
 
-
+# Making the disconnect function
 @app.route('/gdisconnect')
 def gdisconnect():
     access_token = login_session.get('access_token')
     if access_token is None:
         print('Access Token is None')
-        response = make_response(json.dumps('Current user not connected.'), 401)
+        response = make_response(json.dumps
+                                 ('Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    print ('In gdisconnect access token is %s') % access_token
-    print ('User name is: ')
-    print (login_session['username'])
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    print('In gdisconnect access token is %s') % str(access_token)
+    print('User name is: ')
+    print(login_session['username'])
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' \
+          % login_session['access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
     print('result is ')
@@ -149,37 +153,40 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps
+                                 ('Failed to revoke token for given user.',
+                                  400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
+
+# Making the catalog JSON
 @app.route('/catalog/JSON')
-def catalog_JSON():
+def catalog_json():
     shops = session.query(Shop).all()
-    ## TO DO items NO.
-    print("yes")
     return jsonify(Shop=[i.serialize for i in shops])
 
 
 # Making the main catalog
-
 @app.route('/')
 @app.route('/shop')
 @app.route('/shop/')
 def all_list():
+    # login status check
     if 'username' in login_session:
         log_staus = "Logout"
     else:
         log_staus = "Login"
     items = session.query(Item).order_by(Item.id.desc()).all()
     shops = session.query(Shop).all()
-    return render_template('main.html', items=items, shops=shops,log_staus=log_staus)
+    return render_template('main.html', items=items, shops=shops,
+                           log_staus=log_staus)
 
 
-# Making the shop-catalog
-
+# Making the shop-item list
 @app.route('/shop/<string:shop_name>')
 def shop_items(shop_name):
+    # login status check
     if 'username' in login_session:
         log_staus = "Logout"
     else:
@@ -187,77 +194,80 @@ def shop_items(shop_name):
     shops = session.query(Shop).all()
     shop = session.query(Shop).filter_by(name=shop_name).one()
     items = session.query(Item).filter_by(shop_id=shop.id).all()
-    N = len(items)
-    return render_template('shop_item.html', items=items, shops=shops, shop_name=shop_name, N=N,log_staus=log_staus)
+    n = len(items)
+    return render_template('shop_item.html', items=items, shops=shops,
+                           shop_name=shop_name, N=n, log_staus=log_staus)
 
 
 # Making the item information
-
 @app.route('/shop/<string:shop_name>/<int:item_id>')
-def item_info(item_id,shop_name):
+def item_info(item_id, shop_name):
+    # login status check
     if 'username' in login_session:
         log_staus = "Logout"
     else:
         log_staus = "Login"
     item = session.query(Item).filter_by(id=item_id).one()
-    return render_template('item_info.html',item=item,log_staus=log_staus)
+    return render_template('item_info.html', item=item, shop_name=shop_name,
+                           log_staus=log_staus)
 
 
 # Add new item in the shop
-
 @app.route("/item/add", methods=["GET", "POST"])
 def add_item():
+    # login status check
     if 'username' in login_session:
         log_staus = "Logout"
     else:
-        log_staus = "Login"
-    # if "username" not in login_session:
-    #     return redirect("/login")
+        return redirect("/login")
     if request.method == "POST":
-        newItem = Item(title=request.form['title'],price=request.form['price'],shop_id=request.form['shop'],brand=request.form['brand'])
-        session.add(newItem)
+        newitem = Item(title=request.form['title'],
+                       price=request.form['price'],
+                       shop_id=request.form['shop'],
+                       brand=request.form['brand'])
+        session.add(newitem)
         session.commit()
         flash("A new item has been created!")
         return redirect(url_for('all_list'))
     else:
         shops = session.query(Shop).all()
-        return render_template('add.html',shops=shops,log_staus=log_staus)
+        return render_template('add.html', shops=shops, log_staus=log_staus)
 
-#
+
 # Edit item inforamtion in the shop
-
-@app.route('/shop/<string:shop_name>/<int:item_id>/edit',methods=['GET', 'POST'])
-def edit_item(item_id,shop_name):
+@app.route('/shop/<string:shop_name>/<int:item_id>/edit',
+           methods=['GET', 'POST'])
+def edit_item(item_id, shop_name):
+    # login status check
     if 'username' in login_session:
         log_staus = "Logout"
     else:
-        log_staus = "Login"
+        return redirect("/login")
     item = session.query(Item).filter_by(id=item_id).one()
-    shops =session.query(Shop).all()
+    shops = session.query(Shop).all()
     if request.method == "POST":
-        item.title= request.form["title"]
+        item.title = request.form["title"]
         item.price = request.form["price"]
+        item.brand = request.form["brand"]
         item.price = request.form["discount_price"]
         item.shop_id = request.form["shop"]
-        print ("yes")
-        # item.price = request.form["price"]
-        # item.discount_price = request.form["discount_price"]
         session.add(item)
         session.commit()
         flash("The item has been edited!")
-        return redirect(url_for("shop_items",shop_name=shop_name))
+        return redirect(url_for("shop_items", shop_name=shop_name))
     else:
-        return render_template("edit.html",item=item,shop_name=shop_name,log_staus=log_staus,shops=shops)
+        return render_template("edit.html", item=item, shop_name=shop_name,
+                               log_staus=log_staus, shops=shops)
+
 
 # Delete item in the shop
-
-@app.route("/shop/<string:shop_name>/<int:item_id>/delete",methods=['GET', 'POST'])
-
-def delete_item(item_id,shop_name):
+@app.route("/shop/<string:shop_name>/<int:item_id>/delete",
+           methods=['GET', 'POST'])
+def delete_item(item_id, shop_name):
     if 'username' in login_session:
         log_staus = "Logout"
     else:
-        log_staus = "Login"
+        return redirect("/login")
     item = session.query(Item).filter_by(id=item_id).one()
     if request.method == "POST":
         session.delete(item)
@@ -265,10 +275,8 @@ def delete_item(item_id,shop_name):
         flash("The item has been deleted!")
         return redirect(url_for("all_list"))
     else:
-        return render_template("delete.html",item=item,shop_name=shop_name,log_staus=log_staus)
-
-    # return render_template('delete.html')
-
+        return render_template("delete.html", item=item, shop_name=shop_name,
+                               log_staus=log_staus)
 
 
 if __name__ == '__main__':
