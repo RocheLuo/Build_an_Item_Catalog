@@ -30,7 +30,7 @@ The project will run on **localhost:5000** . If the 5000 port have been used, yo
 
 ## How to use
 ### Run The Program
-1. **Make sure you have item.db and database_setup.py in the same file with projcet.py**
+1. **Make sure you have ```item.db``` and ```database_setup.py``` in the same file with projcet.py**
 2. **Make sure you have download templates file and static file, which insure the web can be displayed correctly**
 3. Then use the comand ```python3 projcet.py```, it will start the localhost of 5000. and you can visit the website by visiting **http://localhost:5000/**. if the 5000 port have been used, you can change the port in "project.py" in the end of the code.
 
