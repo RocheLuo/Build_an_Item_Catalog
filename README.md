@@ -26,7 +26,7 @@ You can install **oauth2client** with the code ```pip3 install oauth2client```
 The data used in this project is already in the respository ,named **item.db**. You can also add the origianl data by running code ```python3 lotsofitem.py```
 
 ### Localhost - port =5000
-The project will run on **localhost:5000** . If the 5000 port have been used, you can change the port in "project.py" in the end of the code.
+The project will run on **localhost:5000** . If the 5000 port have been used, you can change the port in ```project.py``` in the end of the code.
 
 ## How to use
 ### Run The Program
